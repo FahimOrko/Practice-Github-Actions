@@ -1,0 +1,21 @@
+{
+  "name": "section-09",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "npm run dev --prefix server",
+    "client": "npm run start --prefix client",
+    "dev": "npm run server & npm run client",
+    "serverOtherWay": "cd server && npm run dev",
+    "clientOhterWay": "cd client && npm run start",
+    "deploy": "npm run build --prefix client && npm start --prefix server",
+    "deploy-cluster": "npm run build --prefix client && npm run cluster --prefix server",
+    "deploy-cluster-stop": "npm run build --prefix client && npm run cluster-stop --prefix server"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
