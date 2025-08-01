@@ -15,6 +15,17 @@ on:
 jobs:
   # Build job
   build:
+    # Disables watch mode
+    # Sometimes tests are run on watch mode and this disables it
+    # also explain this and rewrite if needed the comments i mean
+    env:
+      CI: true
+
+    # Explain this Chatgpt
+    strategy:
+      matrix:
+        node-version: [23.x, 20.x]
+
     # The OS the job will run on
     runs-on: ubuntu-latest
 
@@ -24,17 +35,19 @@ jobs:
       - uses: actions/checkout@v3
 
       # You can name actions like this for clarity
-      - name: Use Node.js version 23.11.0
+      - name: Use Node.js version ${{matrix.node-version}}
         uses: actions/setup-node@v3
         # Specify the Node.js version to use
         with:
-          node-version: "23.11.0"
+          node-version: ${{matrix.node-version}}
 
       # Install dependencies from the root package.json
       - run: npm install
 
       # Build the client-side code by running the build command in the 'client' folder
       - run: npm run build --prefix client
+
+      - run: npm run test
 
   # Deploy job will only run if the build job is successful
   deploy:
