@@ -6,10 +6,10 @@ on:
   # Triggers for this workflow
   push:
     # Trigger when pushing to the master branch
-    branches: [master]
+    branches: [main]
   pull_request:
     # Trigger on pull requests targeting the master branch
-    branches: [master]
+    branches: [main]
 
 # Define the jobs this workflow will run
 jobs:
