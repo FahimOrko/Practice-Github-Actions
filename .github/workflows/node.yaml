@@ -1,27 +1,41 @@
+# Name of the workflow
 name: NASA Project CI
 
+# When the workflow will run
 on:
+  # Triggers for this workflow
   push:
+    # Trigger when pushing to the master branch
     branches: [master]
   pull_request:
+    # Trigger on pull requests targeting the master branch
     branches: [master]
 
+# Define the jobs this workflow will run
 jobs:
+  # Build job
   build:
+    # The OS the job will run on
     runs-on: ubuntu-latest
 
+    # Steps to be executed
     steps:
+      # Checkout the repository so actions can access the code
       - uses: actions/checkout@v3
 
+      # You can name actions like this for clarity
       - name: Use Node.js version 23.11.0
         uses: actions/setup-node@v3
-
+        # Specify the Node.js version to use
         with:
           node-version: "23.11.0"
 
+      # Install dependencies from the root package.json
       - run: npm install
 
+      # Build the client-side code by running the build command in the 'client' folder
       - run: npm run build --prefix client
 
-  deploy:
-    needs: build
+  # # Deploy job will only run if the build job is successful
+  # deploy:
+  #   needs: build
