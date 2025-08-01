@@ -47,7 +47,7 @@ jobs:
       # Build the client-side code by running the build command in the 'client' folder
       - run: npm run build --prefix client
 
-      - run: npm run test
+      - run: npm run test --prefix server
 
   # Deploy job will only run if the build job is successful
   deploy:
