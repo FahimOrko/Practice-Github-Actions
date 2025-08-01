@@ -1,57 +1,69 @@
-# Name of the workflow
+# ✅ Workflow name
 name: NASA Project CI
 
-# When the workflow will run
+# ✅ Define when this workflow should run
 on:
-  # Triggers for this workflow
   push:
-    # Trigger when pushing to the master branch
+    # Trigger the workflow on pushes to the 'main' branch
     branches: [main]
   pull_request:
-    # Trigger on pull requests targeting the master branch
+    # Trigger the workflow on pull requests targeting the 'main' branch
     branches: [main]
 
-# Define the jobs this workflow will run
+# ✅ Define the jobs in this workflow
 jobs:
-  # Build job
+  # --------------------------------------------------
+  # 🔧 BUILD JOB: Runs install, build, and test tasks
+  # --------------------------------------------------
   build:
-    # Disables watch mode
-    # Sometimes tests are run on watch mode and this disables it
-    # also explain this and rewrite if needed the comments i mean
     env:
+      # CI=true disables interactive mode (e.g., watch mode for tests)
+      # Many tools (like Create React App) run in watch mode by default, which is unsuitable for CI
       CI: true
 
-    # Explain this Chatgpt
+      # MongoDB connection string for the test database
+      MONGO_URL: mongodb://localhost/nasa
+
     strategy:
+      # Run the job across multiple Node.js and MongoDB versions
       matrix:
         node-version: [23.x, 20.x]
+        mongodb-version: ["4.2", "4.4"]
 
-    # The OS the job will run on
+    # Specify the OS to run the job on
     runs-on: ubuntu-latest
 
-    # Steps to be executed
     steps:
-      # Checkout the repository so actions can access the code
+      # 📥 Checkout the repository code into the workflow
       - uses: actions/checkout@v3
 
-      # You can name actions like this for clarity
-      - name: Use Node.js version ${{matrix.node-version}}
+      # 🟢 Set up Node.js using the matrix version
+      - name: Set up Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
-        # Specify the Node.js version to use
         with:
-          node-version: ${{matrix.node-version}}
+          node-version: ${{ matrix.node-version }}
 
-      # Install dependencies from the root package.json
+      # 🍃 Set up a temporary MongoDB instance for testing
+      - name: Start MongoDB ${{ matrix.mongodb-version }}
+        uses: supercharge/mongodb-github-action@1.12.0
+        with:
+          mongodb-version: ${{ matrix.mongodb-version }}
+
+      # 📦 Install project dependencies
       - run: npm install
 
-      # Build the client-side code by running the build command in the 'client' folder
+      # 🛠️ Build the frontend (client folder)
       - run: npm run build --prefix client
 
+      # 🧪 Run backend (server) tests
       - run: npm run test --prefix server
 
-  # Deploy job will only run if the build job is successful
+  # --------------------------------------------------
+  # 🚀 DEPLOY JOB: Only runs after a successful build
+  # --------------------------------------------------
   deploy:
     needs: build
     runs-on: ubuntu-latest
     steps:
+      # Placeholder for actual deploy command (e.g., Vercel, SSH, etc.)
       - run: echo "Deploy step placeholder"
